@@ -1,0 +1,19 @@
+# Flutter
+/build/
+/.dart_tool/
+/flutter-plugins
+.packages
+.flutter-plugins-dependencies
+.metadata
+*.iml
+*.lock
+*.log
+
+# Android
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+
+# iOS
+/ios/Flutter/flutter_export_environment.sh
+/ios/Pods/
