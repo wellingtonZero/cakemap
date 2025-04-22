@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'package:confeitaria_marketplace/home_screen.dart';
+import 'package:confeitaria_marketplace/telas/home.dart';
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class TelaScreen extends StatefulWidget {
+  const TelaScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<TelaScreen> createState() => _TelaScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _TelaScreenState extends State<TelaScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
   int biteCount = 0;

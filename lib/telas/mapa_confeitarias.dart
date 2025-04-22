@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
-import 'dart:typed_data';
 
-class ClientScreen extends StatefulWidget {
+
+class MapaConfeitaria extends StatefulWidget {
+  const MapaConfeitaria({super.key});
+
   @override
-  _ClientScreenState createState() => _ClientScreenState();
+  _MapaConfeitariaState createState() => _MapaConfeitariaState();
 }
 
-class _ClientScreenState extends State<ClientScreen> {
+class _MapaConfeitariaState extends State<MapaConfeitaria> {
   late GoogleMapController _mapController;
-  final LatLng _initialPosition = LatLng(-23.5505, -46.6333);
+  final LatLng _initialPosition = LatLng(-6.77088,-35.01584);//-23.5505, -46.6333
   Set<Marker> _markers = {};
   BitmapDescriptor? _customIcon;
   bool _isLoading = true;
