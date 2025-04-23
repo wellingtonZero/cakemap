@@ -56,12 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildActionButton(
-            context,
-            icon: Icons.map,
-            label: 'Mapa',
-            destination: const MapaConfeitaria(),
-          ),
+          // _buildActionButton(
+          //   context,
+          //   icon: Icons.map,
+          //   label: 'Mapa',
+          //   destination: const MapaConfeitaria(),
+          // ),
           const SizedBox(height: 20),
           _buildActionButton(
             context,

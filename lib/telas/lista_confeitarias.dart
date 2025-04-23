@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:confeitaria_marketplace/database/app_database.dart';
 import 'package:confeitaria_marketplace/telas/cadastro_confeitarias.dart';
 import 'package:confeitaria_marketplace/telas/detalhes_confeitarias.dart';
+import 'package:confeitaria_marketplace/telas/mapa_confeitarias.dart';
 import 'package:flutter/material.dart';
 
 
@@ -120,7 +121,7 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => CadastrarConfeitaria(
+                              builder: (_) => MapaConfeitaria(
                                 db: widget.db,
                                 confeitaria: confeitaria,
                               ),
@@ -147,6 +148,7 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
           ).then((_) => setState(() {}));
         },
         child: const Icon(Icons.add),
+        shape: const CircleBorder(),
       ),
     );
   }

@@ -78,7 +78,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
   void _mostrarSnackBar(String mensagem) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensagem), backgroundColor: Colors.orange),
+      SnackBar(content: Text(mensagem,style:TextStyle(color:Colors.black,fontSize: 20)), backgroundColor: Colors.yellow),
     );
   }
 
@@ -501,7 +501,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.location_on,color:Colors.purple),
+          icon: const Icon(Icons.location_on,color:Colors.purple,size:50),
           tooltip: 'Buscar coordenadas pelo endereço',
           onPressed: _isLoading ? null : _buscarCoordenadasPorEndereco,
         ),
@@ -543,7 +543,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                               ? FileImage(_imagemSelecionada!)
                               : AssetImage(_imagemPadraoPath) as ImageProvider,
                           child: _imagemSelecionada == null
-                              ? Icon(Icons.camera_alt, size: 40, color: Colors.purple)
+                              ? Icon(Icons.camera_alt, size: 50, color: Colors.purple)
                               : null,
                         ),
                       ),
@@ -566,17 +566,17 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                       const SizedBox(height: 12),
                       _buildCepField(),
                       const SizedBox(height: 12),
-                      _buildTextField(
-                        controller: _ruaController,
-                        label: 'Rua',
-                        campoKey: 'rua',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTextField(
+                       _buildTextField(
                         controller: _numeroController,
                         label: 'Número',
                         campoKey: 'numero',
                       ),
+                      const SizedBox(height: 12),
+                      _buildTextField(
+                          controller: _ruaController,
+                          label: 'Rua',
+                          campoKey: 'rua',
+                        ),
                       const SizedBox(height: 12),
                       _buildTextField(
                         controller: _bairroController,

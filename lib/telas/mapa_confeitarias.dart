@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
-
+import 'package:confeitaria_marketplace/database/app_database.dart';
 
 class MapaConfeitaria extends StatefulWidget {
-  const MapaConfeitaria({super.key});
+  final Confeitaria confeitaria;
+  final AppDatabase db;
+
+  const MapaConfeitaria({
+    super.key,
+    required this.confeitaria,
+    required this.db,
+  });
 
   @override
   _MapaConfeitariaState createState() => _MapaConfeitariaState();
@@ -13,7 +20,7 @@ class MapaConfeitaria extends StatefulWidget {
 
 class _MapaConfeitariaState extends State<MapaConfeitaria> {
   late GoogleMapController _mapController;
-  final LatLng _initialPosition = LatLng(-6.77088,-35.01584);
+  late LatLng _initialPosition;
   Set<Marker> _markers = {};
   BitmapDescriptor? _customIcon;
   bool _isLoading = true;
@@ -21,45 +28,32 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
   @override
   void initState() {
     super.initState();
+    // Define a posição inicial como a localização da confeitaria
+    _initialPosition = LatLng(
+      widget.confeitaria.latitude,
+      widget.confeitaria.longitude,
+    );
     _loadCustomIcon();
   }
 
   Future<void> _loadCustomIcon() async {
     try {
-      // 1. Carrega o ícone personalizado
       final BitmapDescriptor icon = await _getCustomIcon();
-      
-      // 2. Carrega as confeitarias (simuladas)
-      final List<Map<String, dynamic>> fakeConfeitarias = [
-        {
-          'id': '1',
-          'nome': 'Doces da Maria',
-          'lat': -23.5515,
-          'lng': -46.6343,
-          'tipo': 'bolo'
-        },
-        {
-          'id': '2',
-          'nome': 'Cupcake Mania',
-          'lat': -23.5490,
-          'lng': -46.6320,
-          'tipo': 'cupcake'
-        },
-      ];
 
-      // 3. Cria os marcadores
       setState(() {
         _customIcon = icon;
-        _markers = fakeConfeitarias.map((confeitaria) {
-          return Marker(
-            markerId: MarkerId(confeitaria['id']),
-            position: LatLng(confeitaria['lat'], confeitaria['lng']),
+        _markers = {
+          Marker(
+            markerId: MarkerId(widget.confeitaria.id.toString()),
+            position: _initialPosition,
             infoWindow: InfoWindow(
-              title: confeitaria['nome']),
-            icon: _customIcon!, // Usa o ícone carregado
-            onTap: () => _showConfeitariaDetails(confeitaria['id']),
-          );
-        }).toSet();
+              title: widget.confeitaria.nome,
+              snippet:
+                  '${widget.confeitaria.rua}, ${widget.confeitaria.numero}',
+            ),
+            icon: _customIcon ?? BitmapDescriptor.defaultMarker,
+          )
+        };
         _isLoading = false;
       });
     } catch (e) {
@@ -70,16 +64,16 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
 
   Future<BitmapDescriptor> _getCustomIcon() async {
     try {
-      // Carrega a imagem do asset
       final ByteData data = await rootBundle.load('assets/images/cupcake.png');
       final Uint8List bytes = data.buffer.asUint8List();
-      
-      // Redimensiona (opcional)
-      final ui.Codec codec = await ui.instantiateImageCodec(bytes, targetWidth: 80);
+
+      final ui.Codec codec =
+          await ui.instantiateImageCodec(bytes, targetWidth: 80);
       final ui.FrameInfo frame = await codec.getNextFrame();
-      final ByteData? byteData = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+      final ByteData? byteData =
+          await frame.image.toByteData(format: ui.ImageByteFormat.png);
       final Uint8List resizedBytes = byteData!.buffer.asUint8List();
-      
+
       return BitmapDescriptor.fromBytes(resizedBytes);
     } catch (e) {
       print("Falha ao carregar ícone customizado, usando padrão");
@@ -87,21 +81,11 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
     }
   }
 
-  void _showConfeitariaDetails(String id) {
-    // Navega para tela de detalhes
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ConfeitariaDetailsScreen(confeitariaId: id),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Confeitarias Próximas'),
+        title: Text(widget.confeitaria.nome),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -114,34 +98,30 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
           : GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: _initialPosition,
-                zoom: 14,
+                zoom: 16, // Zoom mais próximo para focar melhor na confeitaria
               ),
               markers: _markers,
-              onMapCreated: (controller) => _mapController = controller,
+              onMapCreated: (controller) {
+                _mapController = controller;
+                // Centraliza o mapa na confeitaria após o carregamento
+                _mapController.animateCamera(
+                  CameraUpdate.newLatLng(_initialPosition),
+                );
+              },
               myLocationEnabled: true,
               compassEnabled: true,
             ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.gps_fixed),
-        onPressed: () => _mapController.animateCamera(
-          CameraUpdate.newLatLng(_initialPosition),
-        ),
+        onPressed: () {
+          if (_mapController != null && _initialPosition != null) {
+            _mapController.animateCamera(
+              CameraUpdate.newLatLng(_initialPosition),
+            );
+          }
+        },
       ),
-    );
-  }
-}
-
-// Tela de detalhes (simplificada)
-class ConfeitariaDetailsScreen extends StatelessWidget {
-  final String confeitariaId;
-
-  const ConfeitariaDetailsScreen({required this.confeitariaId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Detalhes')),
-      body: Center(child: Text('Confeitaria ID: $confeitariaId')),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
