@@ -13,7 +13,7 @@ class MapaConfeitaria extends StatefulWidget {
 
 class _MapaConfeitariaState extends State<MapaConfeitaria> {
   late GoogleMapController _mapController;
-  final LatLng _initialPosition = LatLng(-6.77088,-35.01584);//-23.5505, -46.6333
+  final LatLng _initialPosition = LatLng(-6.77088,-35.01584);
   Set<Marker> _markers = {};
   BitmapDescriptor? _customIcon;
   bool _isLoading = true;
