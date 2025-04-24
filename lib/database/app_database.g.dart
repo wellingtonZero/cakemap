@@ -610,15 +610,9 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
   late final GeneratedColumn<String> descricao = GeneratedColumn<String>(
       'descricao', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _imagemPathMeta =
-      const VerificationMeta('imagemPath');
-  @override
-  late final GeneratedColumn<String> imagemPath = GeneratedColumn<String>(
-      'imagem_path', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, confeitariaId, nome, preco, descricao, imagemPath];
+      [id, confeitariaId, nome, preco, descricao];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -656,12 +650,6 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
       context.handle(_descricaoMeta,
           descricao.isAcceptableOrUnknown(data['descricao']!, _descricaoMeta));
     }
-    if (data.containsKey('imagem_path')) {
-      context.handle(
-          _imagemPathMeta,
-          imagemPath.isAcceptableOrUnknown(
-              data['imagem_path']!, _imagemPathMeta));
-    }
     return context;
   }
 
@@ -681,8 +669,6 @@ class $ProdutosTable extends Produtos with TableInfo<$ProdutosTable, Produto> {
           .read(DriftSqlType.double, data['${effectivePrefix}preco'])!,
       descricao: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}descricao']),
-      imagemPath: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}imagem_path']),
     );
   }
 
@@ -698,14 +684,12 @@ class Produto extends DataClass implements Insertable<Produto> {
   final String nome;
   final double preco;
   final String? descricao;
-  final String? imagemPath;
   const Produto(
       {required this.id,
       required this.confeitariaId,
       required this.nome,
       required this.preco,
-      this.descricao,
-      this.imagemPath});
+      this.descricao});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -715,9 +699,6 @@ class Produto extends DataClass implements Insertable<Produto> {
     map['preco'] = Variable<double>(preco);
     if (!nullToAbsent || descricao != null) {
       map['descricao'] = Variable<String>(descricao);
-    }
-    if (!nullToAbsent || imagemPath != null) {
-      map['imagem_path'] = Variable<String>(imagemPath);
     }
     return map;
   }
@@ -731,9 +712,6 @@ class Produto extends DataClass implements Insertable<Produto> {
       descricao: descricao == null && nullToAbsent
           ? const Value.absent()
           : Value(descricao),
-      imagemPath: imagemPath == null && nullToAbsent
-          ? const Value.absent()
-          : Value(imagemPath),
     );
   }
 
@@ -746,7 +724,6 @@ class Produto extends DataClass implements Insertable<Produto> {
       nome: serializer.fromJson<String>(json['nome']),
       preco: serializer.fromJson<double>(json['preco']),
       descricao: serializer.fromJson<String?>(json['descricao']),
-      imagemPath: serializer.fromJson<String?>(json['imagemPath']),
     );
   }
   @override
@@ -758,7 +735,6 @@ class Produto extends DataClass implements Insertable<Produto> {
       'nome': serializer.toJson<String>(nome),
       'preco': serializer.toJson<double>(preco),
       'descricao': serializer.toJson<String?>(descricao),
-      'imagemPath': serializer.toJson<String?>(imagemPath),
     };
   }
 
@@ -767,15 +743,13 @@ class Produto extends DataClass implements Insertable<Produto> {
           int? confeitariaId,
           String? nome,
           double? preco,
-          Value<String?> descricao = const Value.absent(),
-          Value<String?> imagemPath = const Value.absent()}) =>
+          Value<String?> descricao = const Value.absent()}) =>
       Produto(
         id: id ?? this.id,
         confeitariaId: confeitariaId ?? this.confeitariaId,
         nome: nome ?? this.nome,
         preco: preco ?? this.preco,
         descricao: descricao.present ? descricao.value : this.descricao,
-        imagemPath: imagemPath.present ? imagemPath.value : this.imagemPath,
       );
   Produto copyWithCompanion(ProdutosCompanion data) {
     return Produto(
@@ -786,8 +760,6 @@ class Produto extends DataClass implements Insertable<Produto> {
       nome: data.nome.present ? data.nome.value : this.nome,
       preco: data.preco.present ? data.preco.value : this.preco,
       descricao: data.descricao.present ? data.descricao.value : this.descricao,
-      imagemPath:
-          data.imagemPath.present ? data.imagemPath.value : this.imagemPath,
     );
   }
 
@@ -798,15 +770,13 @@ class Produto extends DataClass implements Insertable<Produto> {
           ..write('confeitariaId: $confeitariaId, ')
           ..write('nome: $nome, ')
           ..write('preco: $preco, ')
-          ..write('descricao: $descricao, ')
-          ..write('imagemPath: $imagemPath')
+          ..write('descricao: $descricao')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, confeitariaId, nome, preco, descricao, imagemPath);
+  int get hashCode => Object.hash(id, confeitariaId, nome, preco, descricao);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -815,8 +785,7 @@ class Produto extends DataClass implements Insertable<Produto> {
           other.confeitariaId == this.confeitariaId &&
           other.nome == this.nome &&
           other.preco == this.preco &&
-          other.descricao == this.descricao &&
-          other.imagemPath == this.imagemPath);
+          other.descricao == this.descricao);
 }
 
 class ProdutosCompanion extends UpdateCompanion<Produto> {
@@ -825,14 +794,12 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
   final Value<String> nome;
   final Value<double> preco;
   final Value<String?> descricao;
-  final Value<String?> imagemPath;
   const ProdutosCompanion({
     this.id = const Value.absent(),
     this.confeitariaId = const Value.absent(),
     this.nome = const Value.absent(),
     this.preco = const Value.absent(),
     this.descricao = const Value.absent(),
-    this.imagemPath = const Value.absent(),
   });
   ProdutosCompanion.insert({
     this.id = const Value.absent(),
@@ -840,7 +807,6 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     required String nome,
     required double preco,
     this.descricao = const Value.absent(),
-    this.imagemPath = const Value.absent(),
   })  : confeitariaId = Value(confeitariaId),
         nome = Value(nome),
         preco = Value(preco);
@@ -850,7 +816,6 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     Expression<String>? nome,
     Expression<double>? preco,
     Expression<String>? descricao,
-    Expression<String>? imagemPath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -858,7 +823,6 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       if (nome != null) 'nome': nome,
       if (preco != null) 'preco': preco,
       if (descricao != null) 'descricao': descricao,
-      if (imagemPath != null) 'imagem_path': imagemPath,
     });
   }
 
@@ -867,15 +831,13 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
       Value<int>? confeitariaId,
       Value<String>? nome,
       Value<double>? preco,
-      Value<String?>? descricao,
-      Value<String?>? imagemPath}) {
+      Value<String?>? descricao}) {
     return ProdutosCompanion(
       id: id ?? this.id,
       confeitariaId: confeitariaId ?? this.confeitariaId,
       nome: nome ?? this.nome,
       preco: preco ?? this.preco,
       descricao: descricao ?? this.descricao,
-      imagemPath: imagemPath ?? this.imagemPath,
     );
   }
 
@@ -897,9 +859,6 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
     if (descricao.present) {
       map['descricao'] = Variable<String>(descricao.value);
     }
-    if (imagemPath.present) {
-      map['imagem_path'] = Variable<String>(imagemPath.value);
-    }
     return map;
   }
 
@@ -910,7 +869,229 @@ class ProdutosCompanion extends UpdateCompanion<Produto> {
           ..write('confeitariaId: $confeitariaId, ')
           ..write('nome: $nome, ')
           ..write('preco: $preco, ')
-          ..write('descricao: $descricao, ')
+          ..write('descricao: $descricao')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProdutoImagensTable extends ProdutoImagens
+    with TableInfo<$ProdutoImagensTable, ProdutoImagen> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProdutoImagensTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _produtoIdMeta =
+      const VerificationMeta('produtoId');
+  @override
+  late final GeneratedColumn<int> produtoId = GeneratedColumn<int>(
+      'produto_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES produtos (id)'));
+  static const VerificationMeta _imagemPathMeta =
+      const VerificationMeta('imagemPath');
+  @override
+  late final GeneratedColumn<String> imagemPath = GeneratedColumn<String>(
+      'imagem_path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, produtoId, imagemPath];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'produto_imagens';
+  @override
+  VerificationContext validateIntegrity(Insertable<ProdutoImagen> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('produto_id')) {
+      context.handle(_produtoIdMeta,
+          produtoId.isAcceptableOrUnknown(data['produto_id']!, _produtoIdMeta));
+    } else if (isInserting) {
+      context.missing(_produtoIdMeta);
+    }
+    if (data.containsKey('imagem_path')) {
+      context.handle(
+          _imagemPathMeta,
+          imagemPath.isAcceptableOrUnknown(
+              data['imagem_path']!, _imagemPathMeta));
+    } else if (isInserting) {
+      context.missing(_imagemPathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProdutoImagen map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProdutoImagen(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      produtoId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}produto_id'])!,
+      imagemPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}imagem_path'])!,
+    );
+  }
+
+  @override
+  $ProdutoImagensTable createAlias(String alias) {
+    return $ProdutoImagensTable(attachedDatabase, alias);
+  }
+}
+
+class ProdutoImagen extends DataClass implements Insertable<ProdutoImagen> {
+  final int id;
+  final int produtoId;
+  final String imagemPath;
+  const ProdutoImagen(
+      {required this.id, required this.produtoId, required this.imagemPath});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['produto_id'] = Variable<int>(produtoId);
+    map['imagem_path'] = Variable<String>(imagemPath);
+    return map;
+  }
+
+  ProdutoImagensCompanion toCompanion(bool nullToAbsent) {
+    return ProdutoImagensCompanion(
+      id: Value(id),
+      produtoId: Value(produtoId),
+      imagemPath: Value(imagemPath),
+    );
+  }
+
+  factory ProdutoImagen.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProdutoImagen(
+      id: serializer.fromJson<int>(json['id']),
+      produtoId: serializer.fromJson<int>(json['produtoId']),
+      imagemPath: serializer.fromJson<String>(json['imagemPath']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'produtoId': serializer.toJson<int>(produtoId),
+      'imagemPath': serializer.toJson<String>(imagemPath),
+    };
+  }
+
+  ProdutoImagen copyWith({int? id, int? produtoId, String? imagemPath}) =>
+      ProdutoImagen(
+        id: id ?? this.id,
+        produtoId: produtoId ?? this.produtoId,
+        imagemPath: imagemPath ?? this.imagemPath,
+      );
+  ProdutoImagen copyWithCompanion(ProdutoImagensCompanion data) {
+    return ProdutoImagen(
+      id: data.id.present ? data.id.value : this.id,
+      produtoId: data.produtoId.present ? data.produtoId.value : this.produtoId,
+      imagemPath:
+          data.imagemPath.present ? data.imagemPath.value : this.imagemPath,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProdutoImagen(')
+          ..write('id: $id, ')
+          ..write('produtoId: $produtoId, ')
+          ..write('imagemPath: $imagemPath')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, produtoId, imagemPath);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProdutoImagen &&
+          other.id == this.id &&
+          other.produtoId == this.produtoId &&
+          other.imagemPath == this.imagemPath);
+}
+
+class ProdutoImagensCompanion extends UpdateCompanion<ProdutoImagen> {
+  final Value<int> id;
+  final Value<int> produtoId;
+  final Value<String> imagemPath;
+  const ProdutoImagensCompanion({
+    this.id = const Value.absent(),
+    this.produtoId = const Value.absent(),
+    this.imagemPath = const Value.absent(),
+  });
+  ProdutoImagensCompanion.insert({
+    this.id = const Value.absent(),
+    required int produtoId,
+    required String imagemPath,
+  })  : produtoId = Value(produtoId),
+        imagemPath = Value(imagemPath);
+  static Insertable<ProdutoImagen> custom({
+    Expression<int>? id,
+    Expression<int>? produtoId,
+    Expression<String>? imagemPath,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (produtoId != null) 'produto_id': produtoId,
+      if (imagemPath != null) 'imagem_path': imagemPath,
+    });
+  }
+
+  ProdutoImagensCompanion copyWith(
+      {Value<int>? id, Value<int>? produtoId, Value<String>? imagemPath}) {
+    return ProdutoImagensCompanion(
+      id: id ?? this.id,
+      produtoId: produtoId ?? this.produtoId,
+      imagemPath: imagemPath ?? this.imagemPath,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (produtoId.present) {
+      map['produto_id'] = Variable<int>(produtoId.value);
+    }
+    if (imagemPath.present) {
+      map['imagem_path'] = Variable<String>(imagemPath.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProdutoImagensCompanion(')
+          ..write('id: $id, ')
+          ..write('produtoId: $produtoId, ')
           ..write('imagemPath: $imagemPath')
           ..write(')'))
         .toString();
@@ -922,11 +1103,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ConfeitariasTable confeitarias = $ConfeitariasTable(this);
   late final $ProdutosTable produtos = $ProdutosTable(this);
+  late final $ProdutoImagensTable produtoImagens = $ProdutoImagensTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [confeitarias, produtos];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [confeitarias, produtos, produtoImagens];
 }
 
 typedef $$ConfeitariasTableCreateCompanionBuilder = ConfeitariasCompanion
@@ -1182,7 +1365,6 @@ typedef $$ProdutosTableCreateCompanionBuilder = ProdutosCompanion Function({
   required String nome,
   required double preco,
   Value<String?> descricao,
-  Value<String?> imagemPath,
 });
 typedef $$ProdutosTableUpdateCompanionBuilder = ProdutosCompanion Function({
   Value<int> id,
@@ -1190,7 +1372,6 @@ typedef $$ProdutosTableUpdateCompanionBuilder = ProdutosCompanion Function({
   Value<String> nome,
   Value<double> preco,
   Value<String?> descricao,
-  Value<String?> imagemPath,
 });
 
 class $$ProdutosTableTableManager extends RootTableManager<
@@ -1215,7 +1396,6 @@ class $$ProdutosTableTableManager extends RootTableManager<
             Value<String> nome = const Value.absent(),
             Value<double> preco = const Value.absent(),
             Value<String?> descricao = const Value.absent(),
-            Value<String?> imagemPath = const Value.absent(),
           }) =>
               ProdutosCompanion(
             id: id,
@@ -1223,7 +1403,6 @@ class $$ProdutosTableTableManager extends RootTableManager<
             nome: nome,
             preco: preco,
             descricao: descricao,
-            imagemPath: imagemPath,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -1231,7 +1410,6 @@ class $$ProdutosTableTableManager extends RootTableManager<
             required String nome,
             required double preco,
             Value<String?> descricao = const Value.absent(),
-            Value<String?> imagemPath = const Value.absent(),
           }) =>
               ProdutosCompanion.insert(
             id: id,
@@ -1239,7 +1417,6 @@ class $$ProdutosTableTableManager extends RootTableManager<
             nome: nome,
             preco: preco,
             descricao: descricao,
-            imagemPath: imagemPath,
           ),
         ));
 }
@@ -1267,11 +1444,6 @@ class $$ProdutosTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<String> get imagemPath => $state.composableBuilder(
-      column: $state.table.imagemPath,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
   $$ConfeitariasTableFilterComposer get confeitariaId {
     final $$ConfeitariasTableFilterComposer composer = $state.composerBuilder(
         composer: this,
@@ -1282,6 +1454,19 @@ class $$ProdutosTableFilterComposer
             $$ConfeitariasTableFilterComposer(ComposerState($state.db,
                 $state.db.confeitarias, joinBuilder, parentComposers)));
     return composer;
+  }
+
+  ComposableFilter produtoImagensRefs(
+      ComposableFilter Function($$ProdutoImagensTableFilterComposer f) f) {
+    final $$ProdutoImagensTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.produtoImagens,
+        getReferencedColumn: (t) => t.produtoId,
+        builder: (joinBuilder, parentComposers) =>
+            $$ProdutoImagensTableFilterComposer(ComposerState($state.db,
+                $state.db.produtoImagens, joinBuilder, parentComposers)));
+    return f(composer);
   }
 }
 
@@ -1308,11 +1493,6 @@ class $$ProdutosTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<String> get imagemPath => $state.composableBuilder(
-      column: $state.table.imagemPath,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
   $$ConfeitariasTableOrderingComposer get confeitariaId {
     final $$ConfeitariasTableOrderingComposer composer = $state.composerBuilder(
         composer: this,
@@ -1326,6 +1506,111 @@ class $$ProdutosTableOrderingComposer
   }
 }
 
+typedef $$ProdutoImagensTableCreateCompanionBuilder = ProdutoImagensCompanion
+    Function({
+  Value<int> id,
+  required int produtoId,
+  required String imagemPath,
+});
+typedef $$ProdutoImagensTableUpdateCompanionBuilder = ProdutoImagensCompanion
+    Function({
+  Value<int> id,
+  Value<int> produtoId,
+  Value<String> imagemPath,
+});
+
+class $$ProdutoImagensTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProdutoImagensTable,
+    ProdutoImagen,
+    $$ProdutoImagensTableFilterComposer,
+    $$ProdutoImagensTableOrderingComposer,
+    $$ProdutoImagensTableCreateCompanionBuilder,
+    $$ProdutoImagensTableUpdateCompanionBuilder> {
+  $$ProdutoImagensTableTableManager(
+      _$AppDatabase db, $ProdutoImagensTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ProdutoImagensTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ProdutoImagensTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> produtoId = const Value.absent(),
+            Value<String> imagemPath = const Value.absent(),
+          }) =>
+              ProdutoImagensCompanion(
+            id: id,
+            produtoId: produtoId,
+            imagemPath: imagemPath,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int produtoId,
+            required String imagemPath,
+          }) =>
+              ProdutoImagensCompanion.insert(
+            id: id,
+            produtoId: produtoId,
+            imagemPath: imagemPath,
+          ),
+        ));
+}
+
+class $$ProdutoImagensTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ProdutoImagensTable> {
+  $$ProdutoImagensTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get imagemPath => $state.composableBuilder(
+      column: $state.table.imagemPath,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$ProdutosTableFilterComposer get produtoId {
+    final $$ProdutosTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.produtoId,
+        referencedTable: $state.db.produtos,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$ProdutosTableFilterComposer(ComposerState(
+                $state.db, $state.db.produtos, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$ProdutoImagensTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ProdutoImagensTable> {
+  $$ProdutoImagensTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get imagemPath => $state.composableBuilder(
+      column: $state.table.imagemPath,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$ProdutosTableOrderingComposer get produtoId {
+    final $$ProdutosTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.produtoId,
+        referencedTable: $state.db.produtos,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$ProdutosTableOrderingComposer(ComposerState(
+                $state.db, $state.db.produtos, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
@@ -1333,4 +1618,6 @@ class $AppDatabaseManager {
       $$ConfeitariasTableTableManager(_db, _db.confeitarias);
   $$ProdutosTableTableManager get produtos =>
       $$ProdutosTableTableManager(_db, _db.produtos);
+  $$ProdutoImagensTableTableManager get produtoImagens =>
+      $$ProdutoImagensTableTableManager(_db, _db.produtoImagens);
 }

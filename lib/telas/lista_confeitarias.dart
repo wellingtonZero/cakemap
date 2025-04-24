@@ -5,7 +5,6 @@ import 'package:confeitaria_marketplace/telas/detalhes_confeitarias.dart';
 import 'package:confeitaria_marketplace/telas/mapa_confeitarias.dart';
 import 'package:flutter/material.dart';
 
-
 class ListarConfeitarias extends StatefulWidget {
   final AppDatabase db;
 
@@ -16,12 +15,14 @@ class ListarConfeitarias extends StatefulWidget {
 }
 
 class _ListarConfeitariasState extends State<ListarConfeitarias> {
-  Future<void> _confirmarExclusaoConfeitaria(BuildContext context, Confeitaria confeitaria) async {
+  Future<void> _confirmarExclusaoConfeitaria(
+      BuildContext context, Confeitaria confeitaria) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar Exclusão'),
-        content: const Text('Deseja realmente excluir esta confeitaria e todos seus produtos?'),
+        content: const Text(
+            'Deseja realmente excluir esta confeitaria e todos seus produtos?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -105,31 +106,40 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
                   },
                   leading: CircleAvatar(
                     radius: 30,
-                    backgroundImage: confeitaria.imagemPath != null && 
-                                    confeitaria.imagemPath!.isNotEmpty
+                    backgroundImage: confeitaria.imagemPath != null &&
+                            confeitaria.imagemPath!.isNotEmpty
                         ? Image.file(File(confeitaria.imagemPath!)).image
                         : const AssetImage('assets/images/logo.jpeg'),
                   ),
-                  title: Text(confeitaria.nome,style: TextStyle(fontSize: 19,color: Colors.purple, height: 1),),
-                  subtitle: Text('${confeitaria.cidade} - ${confeitaria.estado}'),
+                  title: Text(
+                    confeitaria.nome,
+                    style: TextStyle(
+                        fontSize: 19, color: Colors.purple, height: 1),
+                  ),
+                  subtitle:
+                      Text('${confeitaria.cidade} - ${confeitaria.estado}'),
                   trailing: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.add_location_outlined, color: Colors.green, size: 30,),
+                        icon: const Icon(
+                          Icons.add_location_outlined,
+                          color: Colors.green,
+                          size: 30,
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => MapaConfeitaria(
                                 db: widget.db,
-                                confeitaria: confeitaria,
+                                confeitariaSelecionada:
+                                    confeitaria, // Passa a confeitaria específica
                               ),
                             ),
                           ).then((_) => setState(() {}));
                         },
                       ),
-                      
                     ],
                   ),
                 ),

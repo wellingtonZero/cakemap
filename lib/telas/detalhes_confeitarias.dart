@@ -17,8 +17,7 @@ class DetalharConfeitaria extends StatefulWidget {
   });
 
   @override
-  State<DetalharConfeitaria> createState() =>
-      _DetalharConfeitariaState();
+  State<DetalharConfeitaria> createState() => _DetalharConfeitariaState();
 }
 
 class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
@@ -58,17 +57,20 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirmar Exclusão',style: TextStyle(fontSize: 20),),
+        title: const Text('Confirmar Exclusão', style: TextStyle(fontSize: 20)),
         content: const Text(
-            'Deseja realmente excluir esta confeitaria e todos seus produtos?',style:TextStyle(fontSize: 16)),
+            'Deseja realmente excluir esta confeitaria e todos seus produtos?',
+            style: TextStyle(fontSize: 16)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar',style: TextStyle(color: Colors.black,fontSize: 18)),
+            child: const Text('Cancelar',
+                style: TextStyle(color: Colors.black, fontSize: 18)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Excluir', style: TextStyle(color: Colors.red,fontSize:18)),
+            child: const Text('Excluir',
+                style: TextStyle(color: Colors.red, fontSize: 18)),
           ),
         ],
       ),
@@ -87,43 +89,50 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
     }
   }
 
+  Widget _buildImagemConfeitaria() {
+    try {
+      if (widget.confeitaria.imagemPath != null &&
+          File(widget.confeitaria.imagemPath!).existsSync()) {
+        return Image.file(
+          File(widget.confeitaria.imagemPath!),
+          fit: BoxFit.cover,
+        );
+      }
+    } catch (e) {
+      debugPrint('Erro ao carregar imagem: $e');
+    }
+    return Image.asset(
+      'assets/images/logo.jpeg',
+      fit: BoxFit.cover,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 350.0,
+            expandedHeight: 250.0,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
                 widget.confeitaria.nome,
-                textDirection: TextDirection.rtl,
                 style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.0,
-                  height: 1,
+                  color: Colors.white,
+                  fontSize: 16.0,
                   shadows: [
                     Shadow(
                       blurRadius: 10.0,
-                      color: Colors.purple,
+                      color: Colors.black,
                       offset: Offset(1.0, 1.0),
                     )
                   ],
                 ),
               ),
-              background: widget.confeitaria.imagemPath != null &&
-                      widget.confeitaria.imagemPath!.isNotEmpty
-                  ? Image.file(
-                      File(widget.confeitaria.imagemPath!),
-                      fit: BoxFit.cover,
-                    )
-                  : Image.asset(
-                      'assets/images/logo.jpeg',
-                      fit: BoxFit.cover,
-                    ),
+              background: _buildImagemConfeitaria(),
             ),
           ),
           SliverToBoxAdapter(
@@ -142,7 +151,6 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
                       ),
                     ],
                   ),
-                 
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -157,7 +165,7 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
                     ],
                   ),
                   Text(
-                    '${widget.confeitaria.rua} - ${widget.confeitaria.numero} - ${widget.confeitaria.bairro}',
+                    '${widget.confeitaria.rua}, ${widget.confeitaria.numero} - ${widget.confeitaria.bairro}',
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 16),
@@ -231,8 +239,7 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
                                         style: TextStyle(color: Colors.red)),
                                     onTap: () {
                                       Navigator.pop(context);
-                                      _confirmarExclusaoProduto(
-                                          context, produto);
+                                      _confirmarExclusaoProduto(context, produto);
                                     },
                                   ),
                                 ],
@@ -260,22 +267,28 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
                                         MaterialPageRoute(
                                           builder: (_) => DetalharProduto(
                                             produto: produto,
+                                            db: widget.db,
                                           ),
                                         ),
                                       );
                                     },
                                     child: Hero(
                                       tag: 'produto-imagem-${produto.id}',
-                                      child: produto.imagemPath != null &&
-                                              produto.imagemPath!.isNotEmpty
-                                          ? Image.file(
-                                              File(produto.imagemPath!),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.asset(
-                                              'assets/images/logo.jpeg',
-                                              fit: BoxFit.cover,
-                                            ),
+                                      child: StreamBuilder<List<String>>(
+                                        stream: widget.db.watchImagensProduto(produto.id),
+                                        builder: (context, snapshot) {
+                                          final imagens = snapshot.data ?? [];
+                                          return imagens.isNotEmpty
+                                              ? Image.file(
+                                                  File(imagens.first),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/logo.jpeg',
+                                                  fit: BoxFit.cover,
+                                                );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -320,7 +333,6 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
       floatingActionButton: SpeedDial(
         icon: Icons.menu,
         activeIcon: Icons.close,
-        
         foregroundColor: Colors.black,
         overlayColor: Colors.black,
         overlayOpacity: 0.5,

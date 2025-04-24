@@ -23,29 +23,63 @@ class Confeitarias extends Table {
 
 class Produtos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get confeitariaId => integer().references(Confeitarias, #id)(); // chave estrangeira
+  IntColumn get confeitariaId => integer().references(Confeitarias, #id)();
   TextColumn get nome => text()();
   RealColumn get preco => real()();
   TextColumn get descricao => text().nullable()();
-  TextColumn get imagemPath => text().nullable()();
 }
 
+class ProdutoImagens extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get produtoId => integer().references(Produtos, #id)();
+  TextColumn get imagemPath => text()();
+}
 
-@DriftDatabase(tables: [Confeitarias, Produtos])
+@DriftDatabase(tables: [Confeitarias, Produtos, ProdutoImagens])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 3) {
+          await m.createTable(produtoImagens);
+        }
+      },
+    );
+  }
 
   Future<void> deleteConfeitaria(int id) async {
-  await (delete(confeitarias)..where((tbl) => tbl.id.equals(id))).go();
+    await transaction(() async {
+      await (delete(produtos)..where((tbl) => tbl.confeitariaId.equals(id))).go();
+      await (delete(confeitarias)..where((tbl) => tbl.id.equals(id))).go();
+    });
   }
 
   Stream<List<Produto>> watchProdutosDaConfeitaria(int confeitariaId) {
-  return (select(produtos)..where((tbl) => tbl.confeitariaId.equals(confeitariaId))).watch();
+    return (select(produtos)..where((tbl) => tbl.confeitariaId.equals(confeitariaId))).watch();
   }
-  
+
+  Future<List<String>> getImagensProduto(int produtoId) async {
+    final imagens = await (select(produtoImagens)
+      ..where((tbl) => tbl.produtoId.equals(produtoId)))
+      .get();
+    return imagens.map((img) => img.imagemPath).toList();
+  }
+
+  Stream<List<String>> watchImagensProduto(int produtoId) {
+    return (select(produtoImagens)
+      ..where((tbl) => tbl.produtoId.equals(produtoId)))
+      .watch()
+      .map((imagens) => imagens.map((img) => img.imagemPath).toList());
+  }
 }
 
 LazyDatabase _openConnection() {
@@ -55,4 +89,3 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
-

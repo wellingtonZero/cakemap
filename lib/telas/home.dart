@@ -1,8 +1,8 @@
-
-import 'package:confeitaria_marketplace/telas/lista_confeitarias.dart';
-import 'package:confeitaria_marketplace/telas/mapa_confeitarias.dart';
-import 'package:confeitaria_marketplace/database/app_database.dart';
 import 'package:flutter/material.dart';
+import 'package:confeitaria_marketplace/database/app_database.dart';
+import 'package:confeitaria_marketplace/telas/lista_confeitarias.dart';
+import 'package:confeitaria_marketplace/telas/cadastro_confeitarias.dart';
+import 'package:confeitaria_marketplace/telas/mapa_confeitarias.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<AppDatabase> _initializeDatabase() async {
-    await Future.delayed(const Duration(milliseconds: 1500)); // Simula carga
+    await Future.delayed(const Duration(milliseconds: 500));
     return AppDatabase();
   }
 
@@ -29,8 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bem-vindo ao CakeMap!'),
+        title: const Text('CakeMap'),
         centerTitle: true,
+        elevation: 0,
       ),
       body: FutureBuilder<AppDatabase>(
         future: _dbFuture,
@@ -56,21 +57,74 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // _buildActionButton(
-          //   context,
-          //   icon: Icons.map,
-          //   label: 'Mapa',
-          //   destination: const MapaConfeitaria(),
-          // ),
-          const SizedBox(height: 20),
+          // Logo ou imagem principal
+          Image.asset(
+            'assets/images/cupcake.png',
+            height: 150,
+          ),
+          const SizedBox(height: 40),
+          // Botão para Cadastrar Nova
           _buildActionButton(
             context,
-            icon: Icons.list,
-            label: 'Confeitarias',
-            destination: ListarConfeitarias(db: db),
+            icon: Icons.add_business,
+            label: 'Cadastrar Confeitaria',
+            onPressed: () => _navigateTo(context, CadastrarConfeitaria(db: db)),
+          ),
+          const SizedBox(height: 20),
+          // Botão para Listar Confeitarias
+          _buildActionButton(
+            context,
+            icon: Icons.list_alt,
+            label: 'Listar Confeitarias',
+            onPressed: () => _navigateTo(context, ListarConfeitarias(db: db)),
+          ),
+          const SizedBox(height: 20),
+
+          // Botão para Ver no Mapa
+          _buildActionButton(
+            context,
+            icon: Icons.map_outlined,
+            label: 'Ver no Mapa',
+            onPressed: () => _navigateTo(context, MapaConfeitaria(db: db)),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 60,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.purple[50],
+          foregroundColor: Colors.purple[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Colors.purple[300]!),
+          ),
+          elevation: 2,
+        ),
+        icon: Icon(icon, size: 30),
+        label: Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  void _navigateTo(BuildContext context, Widget destination) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => destination),
     );
   }
 
@@ -94,46 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('Tentar novamente'),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required Widget destination,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      height: 60,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 5,
-        ),
-        icon: Icon(icon, size: 30),
-        label: Text(label, style: const TextStyle(fontSize: 18)),
-        onPressed: () => _navigateTo(context, destination),
-      ),
-    );
-  }
-
-  void _navigateTo(BuildContext context, Widget destination) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => destination,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
       ),
     );
   }

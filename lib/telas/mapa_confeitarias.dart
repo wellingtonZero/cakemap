@@ -3,15 +3,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
 import 'package:confeitaria_marketplace/database/app_database.dart';
+import 'package:confeitaria_marketplace/telas/detalhes_confeitarias.dart';
 
 class MapaConfeitaria extends StatefulWidget {
-  final Confeitaria confeitaria;
   final AppDatabase db;
+  final Confeitaria? confeitariaSelecionada;
 
   const MapaConfeitaria({
     super.key,
-    required this.confeitaria,
     required this.db,
+    this.confeitariaSelecionada,
   });
 
   @override
@@ -19,8 +20,8 @@ class MapaConfeitaria extends StatefulWidget {
 }
 
 class _MapaConfeitariaState extends State<MapaConfeitaria> {
-  late GoogleMapController _mapController;
-  late LatLng _initialPosition;
+  GoogleMapController? _mapController;
+  LatLng? _initialPosition;
   Set<Marker> _markers = {};
   BitmapDescriptor? _customIcon;
   bool _isLoading = true;
@@ -28,100 +29,143 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
   @override
   void initState() {
     super.initState();
-    // Define a posição inicial como a localização da confeitaria
-    _initialPosition = LatLng(
-      widget.confeitaria.latitude,
-      widget.confeitaria.longitude,
-    );
-    _loadCustomIcon();
+    _loadCustomIcon().then((_) => _loadConfeitarias());
   }
 
   Future<void> _loadCustomIcon() async {
     try {
-      final BitmapDescriptor icon = await _getCustomIcon();
-
-      setState(() {
-        _customIcon = icon;
-        _markers = {
-          Marker(
-            markerId: MarkerId(widget.confeitaria.id.toString()),
-            position: _initialPosition,
-            infoWindow: InfoWindow(
-              title: widget.confeitaria.nome,
-              snippet:
-                  '${widget.confeitaria.rua}, ${widget.confeitaria.numero}',
-            ),
-            icon: _customIcon ?? BitmapDescriptor.defaultMarker,
-          )
-        };
-        _isLoading = false;
-      });
+      final ByteData data = await rootBundle.load('assets/images/cupcake.png');
+      final Uint8List bytes = data.buffer.asUint8List();
+      final ui.Codec codec = await ui.instantiateImageCodec(
+        bytes,
+        targetWidth: 120, // Tamanho ideal para marcadores
+      );
+      final ui.FrameInfo frame = await codec.getNextFrame();
+      final ByteData? byteData = await frame.image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+      final Uint8List resizedBytes = byteData!.buffer.asUint8List();
+      _customIcon = BitmapDescriptor.fromBytes(resizedBytes);
     } catch (e) {
-      print('Erro ao carregar ícone: $e');
-      setState(() => _isLoading = false);
+      debugPrint("Erro ao carregar ícone: $e");
+      // Fallback para ícone padrão rosa
+      _customIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose);
     }
   }
 
-  Future<BitmapDescriptor> _getCustomIcon() async {
-    try {
-      final ByteData data = await rootBundle.load('assets/images/cupcake.png');
-      final Uint8List bytes = data.buffer.asUint8List();
+  Future<void> _loadConfeitarias() async {
+    final confeitarias = await widget.db.select(widget.db.confeitarias).get();
 
-      final ui.Codec codec =
-          await ui.instantiateImageCodec(bytes, targetWidth: 80);
-      final ui.FrameInfo frame = await codec.getNextFrame();
-      final ByteData? byteData =
-          await frame.image.toByteData(format: ui.ImageByteFormat.png);
-      final Uint8List resizedBytes = byteData!.buffer.asUint8List();
+    setState(() {
+      _markers = confeitarias.map((confeitaria) {
+        final position = LatLng(confeitaria.latitude, confeitaria.longitude);
+        
+        // Define posição inicial se for a confeitaria selecionada ou a primeira da lista
+        if (widget.confeitariaSelecionada?.id == confeitaria.id || 
+            (_initialPosition == null && confeitarias.indexOf(confeitaria) == 0)) {
+          _initialPosition = position;
+        }
 
-      return BitmapDescriptor.fromBytes(resizedBytes);
-    } catch (e) {
-      print("Falha ao carregar ícone customizado, usando padrão");
-      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose);
+        return Marker(
+          markerId: MarkerId(confeitaria.id.toString()),
+          position: position,
+          infoWindow: InfoWindow(
+            title: confeitaria.nome,
+            snippet: '${confeitaria.bairro}',
+            onTap: () => _navigateToDetails(confeitaria),
+          ),
+          icon: _customIcon!, // Usa o mesmo ícone para todas
+          onTap: () {
+            _mapController?.showMarkerInfoWindow(MarkerId(confeitaria.id.toString()));
+          },
+        );
+      }).toSet();
+
+      _isLoading = false;
+    });
+
+    // Foca na confeitaria selecionada após o carregamento
+    if (widget.confeitariaSelecionada != null && _mapController != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(
+              widget.confeitariaSelecionada!.latitude,
+              widget.confeitariaSelecionada!.longitude,
+            ),
+            16, // Zoom mais próximo
+          ),
+        );
+      });
     }
+  }
+
+  void _navigateToDetails(Confeitaria confeitaria) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DetalharConfeitaria(
+          db: widget.db,
+          confeitaria: confeitaria,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.confeitaria.nome),
+        title: Text(widget.confeitariaSelecionada?.nome ?? 'Confeitarias no Mapa'),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: _loadCustomIcon,
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                _isLoading = true;
+                _markers.clear();
+              });
+              _loadConfeitarias();
+            },
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+      body: _isLoading || _initialPosition == null
+          ? const Center(child: CircularProgressIndicator())
           : GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: _initialPosition,
-                zoom: 16, // Zoom mais próximo para focar melhor na confeitaria
+                target: _initialPosition!,
+                zoom: widget.confeitariaSelecionada != null ? 16 : 12,
               ),
               markers: _markers,
               onMapCreated: (controller) {
                 _mapController = controller;
-                // Centraliza o mapa na confeitaria após o carregamento
-                _mapController.animateCamera(
-                  CameraUpdate.newLatLng(_initialPosition),
-                );
+                // Mostra todos os infowindows
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  for (final marker in _markers) {
+                    _mapController?.showMarkerInfoWindow(marker.markerId);
+                  }
+                });
               },
               myLocationEnabled: true,
               compassEnabled: true,
             ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.gps_fixed),
+        child: const Icon(Icons.gps_fixed),
         onPressed: () {
-          if (_mapController != null && _initialPosition != null) {
-            _mapController.animateCamera(
-              CameraUpdate.newLatLng(_initialPosition),
+          if (_initialPosition != null && _mapController != null) {
+            _mapController?.animateCamera(
+              CameraUpdate.newLatLng(_initialPosition!),
             );
           }
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
   }
 }
