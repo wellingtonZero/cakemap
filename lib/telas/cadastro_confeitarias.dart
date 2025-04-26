@@ -78,7 +78,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
   void _mostrarSnackBar(String mensagem) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensagem,style:TextStyle(color:Colors.black,fontSize: 20)), backgroundColor: Colors.yellow),
+      SnackBar(content: Text(mensagem,style:const TextStyle(color:Colors.black,fontSize: 20)), backgroundColor: Colors.yellow),
     );
   }
 
@@ -488,7 +488,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
             controller: _latitudeController,
             label: 'Latitude',
             campoKey: 'latitude',
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
         ),
         const SizedBox(width: 12),
@@ -497,7 +497,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
             controller: _longitudeController,
             label: 'Longitude',
             campoKey: 'longitude',
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
         ),
         IconButton(
@@ -543,7 +543,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                               ? FileImage(_imagemSelecionada!)
                               : AssetImage(_imagemPadraoPath) as ImageProvider,
                           child: _imagemSelecionada == null
-                              ? Icon(Icons.camera_alt, size: 50, color: Colors.purple)
+                              ? const Icon(Icons.camera_alt, size: 50, color: Colors.purple)
                               : null,
                         ),
                       ),

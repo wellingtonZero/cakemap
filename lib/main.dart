@@ -11,12 +11,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           //backgroundColor: Color(0xFF00CED1), // Azul piscina
          backgroundColor: Color(0xFFFFAEC9)
         ),
       ),
-      home: TelaScreen(),
+      home: const TelaScreen(),
     );
   }
 }

@@ -44,6 +44,7 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
     if (confirmed == true) {
       await widget.db.delete(widget.db.produtos).delete(produto);
       if (!mounted) return;
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Produto excluído com sucesso!'),
@@ -79,7 +80,9 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
     if (confirmed == true) {
       await widget.db.deleteConfeitaria(widget.confeitaria.id);
       if (!mounted) return;
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Confeitaria excluída com sucesso!'),

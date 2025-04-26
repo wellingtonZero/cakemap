@@ -15,38 +15,6 @@ class ListarConfeitarias extends StatefulWidget {
 }
 
 class _ListarConfeitariasState extends State<ListarConfeitarias> {
-  Future<void> _confirmarExclusaoConfeitaria(
-      BuildContext context, Confeitaria confeitaria) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar Exclusão'),
-        content: const Text(
-            'Deseja realmente excluir esta confeitaria e todos seus produtos?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      await widget.db.deleteConfeitaria(confeitaria.id);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Confeitaria excluída com sucesso!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +78,7 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
                   ),
                   title: Text(
                     confeitaria.nome,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 19, color: Colors.purple, height: 1),
                   ),
                   subtitle:

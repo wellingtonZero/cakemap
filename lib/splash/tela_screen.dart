@@ -72,7 +72,7 @@ class _TelaScreenState extends State<TelaScreen>
           ),
           
           // Rodapé fixo na parte inferior
-          Positioned(
+          const Positioned(
             bottom: 20,
             left: 0,
             right: 0,

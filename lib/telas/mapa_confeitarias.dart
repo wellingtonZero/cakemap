@@ -16,6 +16,7 @@ class MapaConfeitaria extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _MapaConfeitariaState createState() => _MapaConfeitariaState();
 }
 
@@ -45,6 +46,7 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
         format: ui.ImageByteFormat.png,
       );
       final Uint8List resizedBytes = byteData!.buffer.asUint8List();
+      // ignore: deprecated_member_use
       _customIcon = BitmapDescriptor.fromBytes(resizedBytes);
     } catch (e) {
       debugPrint("Erro ao carregar ícone: $e");
@@ -73,7 +75,7 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
           position: position,
           infoWindow: InfoWindow(
             title: confeitaria.nome,
-            snippet: '${confeitaria.bairro}',
+            snippet: confeitaria.bairro,
             onTap: () => _navigateToDetails(confeitaria),
           ),
           icon: _customIcon!, // Usa o mesmo ícone para todas

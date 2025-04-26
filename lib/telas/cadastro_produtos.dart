@@ -28,12 +28,12 @@ class _CadastrarProdutosState extends State<CadastrarProdutos> {
   final _descricaoController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
-  final String _imagemPadraoPath = 'assets/images/logo.jpeg';
+
   bool _isLoading = false;
-  List<File> _imagensSelecionadas = [];
+  final List<File> _imagensSelecionadas = [];
   Produto? _produtoEmEdicao;
   List<String> _imagensExistentes = [];
-  int _currentImageIndex = 0;
+
 
   @override
   void initState() {
@@ -96,6 +96,7 @@ class _CadastrarProdutosState extends State<CadastrarProdutos> {
             );
       }
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -108,8 +109,10 @@ class _CadastrarProdutosState extends State<CadastrarProdutos> {
       );
 
       _limparCampos();
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, true);
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro: ${e.toString()}'),
@@ -318,7 +321,7 @@ class _CadastrarProdutosState extends State<CadastrarProdutos> {
               const SizedBox(height: 15),
               TextFormField(
                 controller: _precoController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
                   labelText: 'Preço*',
                   border: OutlineInputBorder(),
