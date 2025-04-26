@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF00CED1), // Azul piscina
+          //backgroundColor: Color(0xFF00CED1), // Azul piscina
+         backgroundColor: Color(0xFFFFAEC9)
         ),
       ),
       home: TelaScreen(),

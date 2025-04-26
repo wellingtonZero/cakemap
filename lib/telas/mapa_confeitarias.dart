@@ -38,7 +38,7 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
       final Uint8List bytes = data.buffer.asUint8List();
       final ui.Codec codec = await ui.instantiateImageCodec(
         bytes,
-        targetWidth: 120, // Tamanho ideal para marcadores
+        targetWidth: 90, // Tamanho ideal para marcadores
       );
       final ui.FrameInfo frame = await codec.getNextFrame();
       final ByteData? byteData = await frame.image.toByteData(
@@ -49,7 +49,8 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
     } catch (e) {
       debugPrint("Erro ao carregar ícone: $e");
       // Fallback para ícone padrão rosa
-      _customIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose);
+      _customIcon =
+          BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose);
     }
   }
 
@@ -59,10 +60,11 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
     setState(() {
       _markers = confeitarias.map((confeitaria) {
         final position = LatLng(confeitaria.latitude, confeitaria.longitude);
-        
+
         // Define posição inicial se for a confeitaria selecionada ou a primeira da lista
-        if (widget.confeitariaSelecionada?.id == confeitaria.id || 
-            (_initialPosition == null && confeitarias.indexOf(confeitaria) == 0)) {
+        if (widget.confeitariaSelecionada?.id == confeitaria.id ||
+            (_initialPosition == null &&
+                confeitarias.indexOf(confeitaria) == 0)) {
           _initialPosition = position;
         }
 
@@ -76,7 +78,8 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
           ),
           icon: _customIcon!, // Usa o mesmo ícone para todas
           onTap: () {
-            _mapController?.showMarkerInfoWindow(MarkerId(confeitaria.id.toString()));
+            _mapController
+                ?.showMarkerInfoWindow(MarkerId(confeitaria.id.toString()));
           },
         );
       }).toSet();
@@ -115,21 +118,6 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.confeitariaSelecionada?.nome ?? 'Confeitarias no Mapa'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                _isLoading = true;
-                _markers.clear();
-              });
-              _loadConfeitarias();
-            },
-          ),
-        ],
-      ),
       body: _isLoading || _initialPosition == null
           ? const Center(child: CircularProgressIndicator())
           : GoogleMap(
@@ -160,6 +148,7 @@ class _MapaConfeitariaState extends State<MapaConfeitaria> {
           }
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

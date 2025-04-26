@@ -514,8 +514,8 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.confeitaria == null 
-            ? 'Cadastrar Confeitaria' 
-            : 'Editar Confeitaria'),
+            ? 'Cadastrar' 
+            : 'Editar'),
         actions: [
           if (widget.confeitaria != null)
             IconButton(

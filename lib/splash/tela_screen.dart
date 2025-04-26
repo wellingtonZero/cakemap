@@ -51,39 +51,43 @@ class _TelaScreenState extends State<TelaScreen>
 
   @override
   Widget build(BuildContext context) {
-    String imageAsset = 'assets/images/rosquinha.png';
-    // Aqui você pode trocar para: rosquinha_mordida1.png, rosquinha_mordida2.png etc
-    if (biteCount == 1) imageAsset = 'assets/images/rosquinha_mordida1.png';
-    if (biteCount == 2) imageAsset = 'assets/images/rosquinha_mordida2.png';
-    if (biteCount >= 3) imageAsset = 'assets/images/rosquinha_mordida3.png';
 
     return Scaffold(
-        backgroundColor: const Color(0xffFFD4CD),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40.0),
-              child: Image.asset('assets/images/logo.jpeg', height: 180),
+      backgroundColor: const Color(0xffFFD4CD),
+      body: Stack(
+        children: [
+          // Conteúdo principal centralizado
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo centralizada
+                Image.asset(
+                  'assets/images/logo.jpeg', 
+                  height: 180,
+                  fit: BoxFit.contain,
+                ),
+              ],
             ),
-            Expanded(
-              child: Center(
-                child: RotationTransition(
-                  turns: _rotationController,
-                  child: Image.asset(imageAsset, width: 200),
+          ),
+          
+          // Rodapé fixo na parte inferior
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'wellingtondevsoft',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
                 ),
               ),
             ),
-            Padding(padding: const EdgeInsets.only(bottom: 20.0),
-            child: const Text(
-              'wellingtondevsoft',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              )
-            ),
-            )
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }
-

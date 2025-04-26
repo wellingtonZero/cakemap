@@ -113,20 +113,23 @@ class _DetalharConfeitariaState extends State<DetalharConfeitaria> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 250.0,
+            expandedHeight: 350.0,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
                 widget.confeitaria.nome,
+                textDirection: TextDirection.rtl,
                 style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
+                  color: Colors.black,
+                  fontSize: 18.0,
+                  
+                  height: 1.0,
                   shadows: [
                     Shadow(
                       blurRadius: 10.0,
-                      color: Colors.black,
+                      color: Colors.purple,
                       offset: Offset(1.0, 1.0),
                     )
                   ],

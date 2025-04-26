@@ -58,27 +58,30 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteConfeitaria(int id) async {
     await transaction(() async {
-      await (delete(produtos)..where((tbl) => tbl.confeitariaId.equals(id))).go();
+      await (delete(produtos)..where((tbl) => tbl.confeitariaId.equals(id)))
+          .go();
       await (delete(confeitarias)..where((tbl) => tbl.id.equals(id))).go();
     });
   }
 
   Stream<List<Produto>> watchProdutosDaConfeitaria(int confeitariaId) {
-    return (select(produtos)..where((tbl) => tbl.confeitariaId.equals(confeitariaId))).watch();
+    return (select(produtos)
+          ..where((tbl) => tbl.confeitariaId.equals(confeitariaId)))
+        .watch();
   }
 
   Future<List<String>> getImagensProduto(int produtoId) async {
     final imagens = await (select(produtoImagens)
-      ..where((tbl) => tbl.produtoId.equals(produtoId)))
-      .get();
+          ..where((tbl) => tbl.produtoId.equals(produtoId)))
+        .get();
     return imagens.map((img) => img.imagemPath).toList();
   }
 
   Stream<List<String>> watchImagensProduto(int produtoId) {
     return (select(produtoImagens)
-      ..where((tbl) => tbl.produtoId.equals(produtoId)))
-      .watch()
-      .map((imagens) => imagens.map((img) => img.imagemPath).toList());
+          ..where((tbl) => tbl.produtoId.equals(produtoId)))
+        .watch()
+        .map((imagens) => imagens.map((img) => img.imagemPath).toList());
   }
 }
 

@@ -51,9 +51,6 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Confeitarias Cadastradas'),
-      ),
       body: StreamBuilder<List<Confeitaria>>(
         stream: widget.db.select(widget.db.confeitarias).watch(),
         builder: (context, snapshot) {
@@ -134,7 +131,7 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
                               builder: (_) => MapaConfeitaria(
                                 db: widget.db,
                                 confeitariaSelecionada:
-                                    confeitaria, // Passa a confeitaria específica
+                                    confeitaria,
                               ),
                             ),
                           ).then((_) => setState(() {}));
@@ -147,18 +144,6 @@ class _ListarConfeitariasState extends State<ListarConfeitarias> {
             },
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CadastrarConfeitaria(db: widget.db),
-            ),
-          ).then((_) => setState(() {}));
-        },
-        child: const Icon(Icons.add),
-        shape: const CircleBorder(),
       ),
     );
   }
