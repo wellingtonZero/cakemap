@@ -28,7 +28,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
   File? _imagemSelecionada;
   final ImagePicker _picker = ImagePicker();
   final String _imagemPadraoPath = 'assets/images/logo.jpeg';
-  
+
   // Controllers
   final _nomeController = TextEditingController();
   final _telefoneController = TextEditingController();
@@ -43,9 +43,16 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
 
   // Validação
   final Map<String, bool> _campoValido = {
-    'nome': true, 'telefone': true, 'cep': true, 'rua': true,
-    'numero': true, 'bairro': true, 'cidade': true, 'estado': true,
-    'latitude': true, 'longitude': true,
+    'nome': true,
+    'telefone': true,
+    'cep': true,
+    'rua': true,
+    'numero': true,
+    'bairro': true,
+    'cidade': true,
+    'estado': true,
+    'latitude': true,
+    'longitude': true,
   };
 
   @override
@@ -78,13 +85,16 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
   void _mostrarSnackBar(String mensagem) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mensagem,style:const TextStyle(color:Colors.black,fontSize: 20)), backgroundColor: Colors.yellow),
+      SnackBar(
+          content: Text(mensagem,
+              style: const TextStyle(color: Colors.black, fontSize: 20)),
+          backgroundColor: Colors.yellow),
     );
   }
 
   Future<void> _buscarEnderecoPorCep() async {
     if (!mounted) return;
-    
+
     final cep = _cepController.text.replaceAll(RegExp(r'[^0-9]'), '');
     if (cep.length != 8) {
       _mostrarSnackBar('CEP deve conter 8 dígitos');
@@ -99,7 +109,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
       );
 
       if (!mounted) return;
-      
+
       if (response.statusCode == 200) {
         final endereco = json.decode(response.body);
         if (endereco.containsKey('erro')) {
@@ -133,9 +143,11 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
 
   Future<void> _buscarCoordenadasPorEndereco() async {
     if (!mounted) return;
-    
-    if (_ruaController.text.isEmpty || _numeroController.text.isEmpty || 
-        _cidadeController.text.isEmpty || _estadoController.text.isEmpty) {
+
+    if (_ruaController.text.isEmpty ||
+        _numeroController.text.isEmpty ||
+        _cidadeController.text.isEmpty ||
+        _estadoController.text.isEmpty) {
       _mostrarSnackBar('Preencha o endereço completo');
       return;
     }
@@ -143,17 +155,20 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
     setState(() => _isLoading = true);
 
     try {
-      final enderecoCompleto = '${_ruaController.text}, ${_numeroController.text}, '
+      final enderecoCompleto =
+          '${_ruaController.text}, ${_numeroController.text}, '
           '${_bairroController.text}, ${_cidadeController.text}, ${_estadoController.text}';
-      
+
       final locations = await locationFromAddress(enderecoCompleto);
-      
+
       if (!mounted) return;
-      
+
       if (locations.isNotEmpty) {
         setState(() {
-          _latitudeController.text = locations.first.latitude.toStringAsFixed(6);
-          _longitudeController.text = locations.first.longitude.toStringAsFixed(6);
+          _latitudeController.text =
+              locations.first.latitude.toStringAsFixed(6);
+          _longitudeController.text =
+              locations.first.longitude.toStringAsFixed(6);
         });
       } else {
         _mostrarSnackBar('Endereço não encontrado');
@@ -241,7 +256,8 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
             if (_imagemSelecionada != null)
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Remover', style: TextStyle(color: Colors.red)),
+                title:
+                    const Text('Remover', style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context);
                   if (mounted) {
@@ -257,8 +273,26 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
 
   Future<void> _salvarConfeitaria() async {
     if (!mounted) return;
-    
-    setState(() => _campoValido.forEach((key, value) => _campoValido[key] = true));
+
+    setState(
+        () => _campoValido.forEach((key, value) => _campoValido[key] = true));
+
+    // Verificação do nome da confeitaria
+    if (_nomeController.text.isEmpty) {
+      _mostrarSnackBar('Digite o nome da confeitaria');
+      setState(() => _campoValido['nome'] = false);
+      return;
+    }
+
+    // Verificação dos campos de posição
+    if (_latitudeController.text.isEmpty || _longitudeController.text.isEmpty) {
+      _mostrarSnackBar('Inserir os dados de posição');
+      setState(() {
+        _campoValido['latitude'] = _latitudeController.text.isNotEmpty;
+        _campoValido['longitude'] = _longitudeController.text.isNotEmpty;
+      });
+      return;
+    }
 
     if (!_formKey.currentState!.validate()) {
       if (mounted) setState(() {});
@@ -285,7 +319,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
 
       if (widget.confeitaria == null) {
         await widget.db.into(widget.db.confeitarias).insert(confeitariaData);
-        
+
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -294,7 +328,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
             duration: Duration(seconds: 2),
           ),
         );
-        
+
         _limparCampos();
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
@@ -304,22 +338,22 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
         }
       } else {
         await widget.db.update(widget.db.confeitarias).replace(
-          Confeitaria(
-            id: widget.confeitaria!.id,
-            nome: confeitariaData.nome.value,
-            telefone: confeitariaData.telefone.value,
-            cep: confeitariaData.cep.value,
-            rua: confeitariaData.rua.value,
-            numero: confeitariaData.numero.value,
-            bairro: confeitariaData.bairro.value,
-            cidade: confeitariaData.cidade.value,
-            estado: confeitariaData.estado.value,
-            latitude: confeitariaData.latitude.value,
-            longitude: confeitariaData.longitude.value,
-            imagemPath: confeitariaData.imagemPath.value,
-          ),
-        );
-        
+              Confeitaria(
+                id: widget.confeitaria!.id,
+                nome: confeitariaData.nome.value,
+                telefone: confeitariaData.telefone.value,
+                cep: confeitariaData.cep.value,
+                rua: confeitariaData.rua.value,
+                numero: confeitariaData.numero.value,
+                bairro: confeitariaData.bairro.value,
+                cidade: confeitariaData.cidade.value,
+                estado: confeitariaData.estado.value,
+                latitude: confeitariaData.latitude.value,
+                longitude: confeitariaData.longitude.value,
+                imagemPath: confeitariaData.imagemPath.value,
+              ),
+            );
+
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -347,7 +381,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
 
   Future<void> _confirmarExclusao() async {
     if (!mounted) return;
-    
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -369,7 +403,9 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
     if (confirmed == true && mounted) {
       setState(() => _isLoading = true);
       try {
-        await widget.db.delete(widget.db.confeitarias).delete(widget.confeitaria!);
+        await widget.db
+            .delete(widget.db.confeitarias)
+            .delete(widget.confeitaria!);
         if (!mounted) return;
         Navigator.pop(context, true);
       } catch (e) {
@@ -464,7 +500,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
         filled: true,
         fillColor: _campoValido['cep']! ? Colors.grey[50] : Colors.red[50],
         suffixIcon: IconButton(
-          icon: const Icon(Icons.search,color: Colors.purple),
+          icon: const Icon(Icons.search, color: Colors.purple),
           onPressed: _isLoading ? null : _buscarEnderecoPorCep,
         ),
       ),
@@ -501,7 +537,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.location_on,color:Colors.purple,size:50),
+          icon: const Icon(Icons.location_on, color: Colors.purple, size: 50),
           tooltip: 'Buscar coordenadas pelo endereço',
           onPressed: _isLoading ? null : _buscarCoordenadasPorEndereco,
         ),
@@ -513,9 +549,7 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.confeitaria == null 
-            ? 'Cadastrar' 
-            : 'Editar'),
+        title: Text(widget.confeitaria == null ? 'Cadastrar' : 'Editar'),
         actions: [
           if (widget.confeitaria != null)
             IconButton(
@@ -543,7 +577,8 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                               ? FileImage(_imagemSelecionada!)
                               : AssetImage(_imagemPadraoPath) as ImageProvider,
                           child: _imagemSelecionada == null
-                              ? const Icon(Icons.camera_alt, size: 50, color: Colors.purple)
+                              ? const Icon(Icons.camera_alt,
+                                  size: 50, color: Colors.purple)
                               : null,
                         ),
                       ),
@@ -566,17 +601,17 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                       const SizedBox(height: 12),
                       _buildCepField(),
                       const SizedBox(height: 12),
-                       _buildTextField(
+                      _buildTextField(
                         controller: _numeroController,
                         label: 'Número',
                         campoKey: 'numero',
                       ),
                       const SizedBox(height: 12),
                       _buildTextField(
-                          controller: _ruaController,
-                          label: 'Rua',
-                          campoKey: 'rua',
-                        ),
+                        controller: _ruaController,
+                        label: 'Rua',
+                        campoKey: 'rua',
+                      ),
                       const SizedBox(height: 12),
                       _buildTextField(
                         controller: _bairroController,
@@ -622,10 +657,11 @@ class _CadastrarConfeitariaState extends State<CadastrarConfeitaria> {
                           ),
                           onPressed: _isLoading ? null : _salvarConfeitaria,
                           child: _isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
                               : Text(
-                                  widget.confeitaria == null 
-                                      ? 'CADASTRAR' 
+                                  widget.confeitaria == null
+                                      ? 'CADASTRAR'
                                       : 'SALVAR ALTERAÇÕES',
                                   style: const TextStyle(
                                     fontSize: 16,

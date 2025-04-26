@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:confeitaria_marketplace/database/app_database.dart';
 import 'package:confeitaria_marketplace/telas/lista_confeitarias.dart';
@@ -87,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 selectedIcon: Icon(Icons.list_alt),
                 label: 'Lista',
               ),
-              NavigationDestination(
+               NavigationDestination(
                 icon: Icon(Icons.add_business_outlined),
                 selectedIcon: Icon(Icons.add_business),
                 label: 'Cadastrar',

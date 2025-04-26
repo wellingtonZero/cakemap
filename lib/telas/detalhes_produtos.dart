@@ -30,6 +30,13 @@ class _DetalharProdutoState extends State<DetalharProduto> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Color(0xFFFFAEC9),
+      ),
       body: Column(
         children: [
           Expanded(
@@ -84,7 +91,7 @@ class _DetalharProdutoState extends State<DetalharProduto> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: _currentImageIndex == entry.key
-                                  ? Colors.purple
+                                  ? Color(0xFFFFAEC9)
                                   : Colors.grey,
                             ),
                           );
