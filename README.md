@@ -31,7 +31,8 @@ Ao abrir o App teremos um Carrossel com as confeitarias, menssagens de boas vind
 <img width="300" src= "https://github.com/user-attachments/assets/909dae3c-b0d6-4798-9621-2e42a9e7e619" alt="tela1">
 <img width="300" src= "https://github.com/user-attachments/assets/cf300c1f-129e-47e8-bd58-66c3fba8e3c0" alt="Home">
 
-Segundo botão vai listar as confeitarias cadastradas no app permitindo ao usuario explorar com mais detalhes as confeitarias disponíveis levando a outra tela com informações dos produtos. 
+Segundo botão vai listar as confeitarias cadastradas no app permitindo ao usuario explorar com mais detalhes as confeitarias disponíveis levando a outra tela com informações tanto
+estabelecimento quanto dos produtos. 
 Além disso possui um icone de marcador de mapa levando o usuário ver onde fica a posição dessa confeitaria.
 
 <img width="300" src= "https://github.com/user-attachments/assets/9af93beb-761a-4dc8-b8f0-9cbbbf7461fc" alt="Tela2">
