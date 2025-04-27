@@ -40,6 +40,7 @@ Além disso possui um icone de marcador de mapa levando o usuário ver onde fica
 
 Quando clicado em algum produto veremos detalhes sobre valor e descrição além disso pode incluir mais de uma foto para maiores detalhes.
 O botão em forma de hamburguer possui a opção de cadastrar um produto, editar a confeitaria referente a opções de cadastro da confeitaria ou excluir essa opção se for escolhida irá apagar além da confeitaria todos seus produtos.
+
 <img width="300" src= "https://github.com/user-attachments/assets/d6af9d19-6e69-4f45-9c53-416beb149f21" alt="Tela3">
 <img width="300" src= "https://github.com/user-attachments/assets/77dce976-7c45-4899-bb92-99c8df0411af" alt="Tela3">
 
