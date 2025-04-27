@@ -1,16 +1,9 @@
 # confeitaria_marketplace
 
-A new Flutter project.
+Projeto Desenvolvido para Cadastrar Confeitarias e marcar sua posição no mapa facilitando assim a descoberta por novos clientes.
 
-## Getting Started
+## Desenvolvendo o APP
 
-This project is a starting point for a Flutter application.
+Foi iniciado o projeto especialmente para a plantaforma android, dessa forma foi dispensado o uso de recursos para desktop, web e IOs.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
