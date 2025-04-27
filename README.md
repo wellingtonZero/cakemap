@@ -38,6 +38,7 @@ Além disso possui um icone de marcador de mapa levando o usuário ver onde fica
 <img width="300" src= "https://github.com/user-attachments/assets/9af93beb-761a-4dc8-b8f0-9cbbbf7461fc" alt="Tela2">
 <img width="315" src= "https://github.com/user-attachments/assets/be6d466d-89f1-4641-815f-1126bc12ab6b" alt="Tela3">
 
+O botão em forma de hamburguer possui a opção de cadastrar um produto, editar a confeitaria ou excluir essa opção se for escolhida irá apagar além da confeitaria todos seus produtos.
 
-
+<img width="300" src= "https://github.com/user-attachments/assets/77dce976-7c45-4899-bb92-99c8df0411af" alt="Tela3">
 
