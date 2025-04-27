@@ -25,6 +25,9 @@ Pré-Requisitos:
 
 ## Telas Do App
 
+Tela Inicial do App no centro possui uma animação desenvolvida com do site rive.app 
+
+<img width="300" src= "https://github.com/user-attachments/assets/909dae3c-b0d6-4798-9621-2e42a9e7e619" alt="tela1">
 
 
 
