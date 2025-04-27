@@ -42,13 +42,13 @@ Quando clicado em algum produto veremos detalhes sobre valor e descrição além
 O botão em forma de hamburguer possui a opção de cadastrar um produto, editar a confeitaria referente a opções de cadastro da confeitaria ou excluir essa opção se for escolhida irá apagar além da confeitaria todos seus produtos.
 
 <img width="300" src= "https://github.com/user-attachments/assets/d6af9d19-6e69-4f45-9c53-416beb149f21" alt="Tela3">
-<img width="310" src= "https://github.com/user-attachments/assets/77dce976-7c45-4899-bb92-99c8df0411af" alt="Tela4">
+<img width="300" src= "https://github.com/user-attachments/assets/77dce976-7c45-4899-bb92-99c8df0411af" alt="Tela4">
 
 Acessando a tela de adicionar produtos existe dois botões o primeiro pode buscar imagens na galeria e o segundo pode usar a camera para registra o produto e adicionar, tendo a possibilidade de adicionar
 mais de uma imagem. Na mesma tela existe um botão responsável por listar todos os produtos dessa confeitaria dando opção também de editar e excluir.
 
 <img width="300" src= "https://github.com/user-attachments/assets/90df7dcd-f6e3-485d-ae5a-a0960858cf04" alt="Tela5">
-<img width="300" src= "https://github.com/user-attachments/assets/51c93a4d-d04e-420f-ba70-fe85446f71e3" alt="Tela6">
+<img width="290" src= "https://github.com/user-attachments/assets/51c93a4d-d04e-420f-ba70-fe85446f71e3" alt="Tela6">
 
 A tela de cadastro de confeitarias. Tela do Mapa para visualização da localização da confeitaria.
 
