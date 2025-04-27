@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-          //backgroundColor: Color(0xFF00CED1), // Azul piscina
          backgroundColor: Color(0xFFFFAEC9)
         ),
       ),
