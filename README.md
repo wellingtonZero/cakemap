@@ -26,11 +26,9 @@ Pré-Requisitos:
 ## Telas Do App
 
 Tela de Splash Inicial do App no centro possui uma animação desenvolvida através da ferramenta site rive.app 
-
-<img width="300" src= "https://github.com/user-attachments/assets/909dae3c-b0d6-4798-9621-2e42a9e7e619" alt="tela1">
-
 Ao abrir o App teremos um Carrossel com as confeitarias, menssagens de boas vindas e botões de navegações na parte inferior
 
+<img width="300" src= "https://github.com/user-attachments/assets/909dae3c-b0d6-4798-9621-2e42a9e7e619" alt="tela1">
 <img width="300" src= "https://github.com/user-attachments/assets/cf300c1f-129e-47e8-bd58-66c3fba8e3c0" alt="Home">
 
 
