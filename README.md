@@ -49,3 +49,9 @@ mais de uma imagem. Na mesma tela existe um botão responsável por listar todos
 
 <img width="300" src= "https://github.com/user-attachments/assets/90df7dcd-f6e3-485d-ae5a-a0960858cf04" alt="Tela5">
 <img width="300" src= "https://github.com/user-attachments/assets/51c93a4d-d04e-420f-ba70-fe85446f71e3" alt="Tela6">
+
+A tela de cadastro de confeitarias. Tela do Mapa para visualização da localização da confeitaria.
+
+<img width="300" src= "https://github.com/user-attachments/assets/f4617eb9-99cb-4c9d-95d1-d9cb3aabb143" alt="Tela7">
+<img width="300" src= "https://github.com/user-attachments/assets/c876d784-03b5-437c-8ffe-0049d2281ae1" alt="Tela8">
+
