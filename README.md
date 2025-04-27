@@ -1,4 +1,4 @@
-# confeitaria_marketplace
+# Confeitaria_marketplace "CAKEMAP"
 
 Projeto Desenvolvido para Cadastrar Confeitarias e marcar sua posição no mapa facilitando assim a descoberta por novos clientes.
 
